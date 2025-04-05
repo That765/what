@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cameron County Weather</title>
+    <style>
+        body {
+            font-family: "Trebuchet MS", Arial, sans-serif;
+            background: linear-gradient(to bottom, #d0eaff, #a3cce3);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1100px;
+            margin: auto;
+            background: #fdfdfd;
+            border-radius: 15px;
+            border: 1px solid #aaccee;
+            padding: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            color: #004488;
+            text-shadow: 2px 2px 4px #cceeff;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .nostalgic-banner {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #004488;
+            margin: 20px 0;
+            text-shadow: 3px 3px 6px #aaccee, -3px -3px 6px #ffffff;
+            padding: 10px;
+            background: linear-gradient(to right, #eef8ff, #d0eaff);
+            border: 3px solid #aaccee;
+            border-radius: 15px;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), inset 0 2px 6px rgba(255, 255, 255, 0.7);
+        }
+
+        .nostalgic-link {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #004488;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+            background: linear-gradient(to bottom, #aaccee, #eef8ff);
+            padding: 10px 20px;
+            border: 2px solid #004488;
+            border-radius: 10px;
+            box-shadow: inset 0 1px 5px rgba(255, 255, 255, 0.8), 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .nostalgic-link:hover {
+            background: linear-gradient(to bottom, #eef8ff, #aaccee);
+            box-shadow: inset 0 2px 6px rgba(255, 255, 255, 1), 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        p.top-message {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #e8f4fa;
+            border-radius: 10px;
+            border: 1px solid #aaccee;
+        }
+
+        input, button {
+            padding: 10px;
+            font-size: 1.2rem;
+            margin: 10px;
+            border-radius: 5px;
+            border: 1px solid #aaccee;
+            box-shadow: inset 0 1px 2px #e8f4fa;
+            width: calc(100% - 40px); /* Ensure input fits mobile screens */
+        }
+
+        button {
+            background: linear-gradient(to bottom, #aaccee, #d0eaff);
+            color: #004488;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: linear-gradient(to bottom, #d0eaff, #aaccee);
+        }
+
+        .result, .radar {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #aaa;
+            background: linear-gradient(to bottom, #ffffff, #e6f0f8);
+            box-shadow: inset 0 1px 5px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #555;
+            text-shadow: 1px 1px 0px #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Nostalgic Title Banner -->
+    <div class="nostalgic-banner">
+        CameronCountyWeather
+    </div>
+
+    <!-- Nostalgic Link to YouTube Channel -->
+    <a href="https://www.youtube.com/@WeatherNerd1135" class="nostalgic-link" target="_blank">My Channel!</a>
+
+    <div class="container">
+        <h1>Nostalgic Weather Dashboard</h1>
+        <p class="top-message">Note: This dashboard does not use your location automatically. Please enter a city manually to view weather information and radar!</p>
+        <input type="text" id="cityInput" placeholder="Type your city name...">
+        <button onclick="fetchWeather()">Get Weather</button>
+        <div id="weatherResult" class="result">
+            <!-- Weather information will appear here -->
+        </div>
+        <div id="radarSection" class="radar">
+            <h2>Live Radar</h2>
+            <iframe 
+                src="https://radar.weather.gov/station/kbro/standard" 
+                title="Weather Radar for Cameron County">
+            </iframe>
+        </div>
+    </div>
+    <div class="footer">
+        <p>&copy; 2025 Nostalgic Weather Co. All rights reserved.</p>
+    </div>
+    <script>
+        const cameronCountyCities = {
+            "brownsville": { lat: 25.9303, lon: -97.4849 },
+            "harlingen": { lat: 26.1906, lon: -97.6961 },
+            "san benito": { lat: 26.1365, lon: -97.6300 },
+            "rio hondo": { lat: 26.2334, lon: -97.5808 },
+            "port isabel": { lat: 26.0681, lon: -97.2058 },
+            "los fresnos": { lat: 26.0720, lon: -97.4799 }
+        };
+
+        async function fetchWeather() {
+            const city = document.getElementById("cityInput").value.trim().toLowerCase();
+
+            if (!cameronCountyCities[city]) {
+                alert("Please enter a valid Cameron County city.");
+                return;
+            }
+
+            const { lat, lon } = cameronCountyCities[city];
+            const forecastUrl = `https://api.weather.gov/points/${lat},${lon}`;
+
+            try {
+                const response = await fetch(forecastUrl);
+                const data = await response.json();
+                const forecastApi = data.properties.forecast;
+
+                const forecastResponse = await fetch(forecastApi);
+                const forecastData = await forecastResponse.json();
+                const periods = forecastData.properties.periods;
+
+                const weatherHTML = periods.map(period => `
+                    <p><strong>${period.name}:</strong> ${period.temperature}°F - ${period.shortForecast}</p>
+                `).join("");
+
+                document.getElementById("weatherResult").innerHTML = `
+                    <h2>Weather for ${city.charAt(0).toUpperCase() + city.slice(1)}</h2>
+                    ${weatherHTML}
+                `;
+            } catch (error) {
+                document.getElementById("weatherResult").innerHTML = `<p>Unable to fetch weather data. Please try again.</p>`;
+            }
+        }
+    </script>
+</body>
+</html>
